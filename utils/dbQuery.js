@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 const cTable = require("console.table")
-const { addDepartmentQuestion, addRoleQuestion, addEmployeeQuestion, mainMenuQuestion} = require("./userPrompts");
+const { addDepartmentQuestion, addRoleQuestion, addEmployeeQuestion, mainMenuQuestion, updateEmployeeQuestion} = require("./userPrompts");
 const inquirer = require("inquirer");
 
 const routeRequest = (data) => {
@@ -28,8 +28,12 @@ const routeRequest = (data) => {
         case "Add an employee":
             addEmployee();
             break;
+
+        case "Update an employee":
+            updateEmployee();
+            break;
         
-        case "EXIT":
+        default:
             exitApp();
             break;
     };
@@ -139,6 +143,23 @@ const addEmployee = () => {
             })
         }
     )
+};
+
+const updateEmployee = () => {
+    const sql = `UPDATE employee SET role_id = ? WHERE id = ?`
+    inquirer.prompt(updateEmployeeQuestion).then((data) => {
+        const params = [data.newRole, data.employeeId];
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                console.log("Employee role successfully updated!");
+                returnToMainMenu();
+            }
+        })
+    })
 };
 
 const returnToMainMenu = () => {

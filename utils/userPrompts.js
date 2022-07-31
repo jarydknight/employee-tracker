@@ -103,4 +103,47 @@ const addEmployeeQuestion = [
     }
 ];
 
-module.exports = {mainMenuQuestion, addDepartmentQuestion, addRoleQuestion, addEmployeeQuestion};
+const updateEmployeeQuestion = [
+    {
+        type: "list",
+        name: "employeeId",
+        message: "Select the employee you wish to update",
+        choices: function () {
+            return new Promise (function (resolve, reject) {
+                const sql = `SELECT employee.id, CONCAT (employee.first_name, ' ', employee.last_name) employee FROM employee`;
+                db.query(sql, (err, row) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    else {
+                        let optionsArr = [];
+                        row.forEach(obj => optionsArr.push({name: obj.employee, value: obj.id}))
+                        resolve(optionsArr)
+                    }
+                })
+            })
+        }
+    },
+    {
+        type: "list",
+        name: "newRole",
+        message: "Select a new role for the employee",
+        choices: function () {
+            return new Promise (function (resolve, reject) {
+                const sql = `SELECT role.id, role.title FROM role`;
+                db.query(sql, (err, row) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    else {
+                        let optionsArr = [];
+                        row.forEach(obj => optionsArr.push({name: obj.title, value: obj.id}))
+                        resolve(optionsArr)
+                    }
+                })
+            })
+        }
+    }
+];
+
+module.exports = {mainMenuQuestion, addDepartmentQuestion, addRoleQuestion, addEmployeeQuestion, updateEmployeeQuestion};
