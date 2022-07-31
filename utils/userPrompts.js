@@ -1,3 +1,5 @@
+const db = require("../db/connection");
+
 const mainMenuQuestion = [
     {
         type: "list",
@@ -15,6 +17,37 @@ const addDepartmentQuestion = [
     }
 ];
 
+const addRoleQuestion = [
+    {
+        type: "input",
+        name: "roleName",
+        message: "Enter the name for the new role"
+    },
+    {
+        type: "input",
+        name: "roleSalary",
+        message: "Enter the salary for the new role"
+    },
+    {
+        type: "list",
+        name: "roleDepartment",
+        message: "Choose a department for the new role",
+        choices: function () {
+            return new Promise (function (resolve, reject) {
+                const sql = `SELECT * FROM department`;
+                db.query(sql, (err, row) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    else {
+                        let optionsArr = [];
+                        row.forEach(obj => optionsArr.push({name: obj.name, value: obj.id}))
+                        resolve(optionsArr)
+                    }
+                })
+            })
+        }
+    }
+];
 
-
-module.exports = {mainMenuQuestion, addDepartmentQuestion};
+module.exports = {mainMenuQuestion, addDepartmentQuestion, addRoleQuestion};
