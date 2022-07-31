@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 const cTable = require("console.table")
-const { addDepartmentQuestion, addRoleQuestion } = require("./userPrompts");
+const { addDepartmentQuestion, addRoleQuestion, addEmployeeQuestion } = require("./userPrompts");
 const inquirer = require("inquirer");
 
 const routeRequest = (data) => {
@@ -23,6 +23,10 @@ const routeRequest = (data) => {
 
         case "Add a role":
             addRole();
+            break;
+
+        case "Add an employee":
+            addEmployee();
             break;
     };
 };
@@ -105,6 +109,23 @@ const addRole = () => {
                 else {
                     console.log("New role successfully added!")
                 };
+            })
+        }
+    )
+};
+
+const addEmployee = () => {
+    const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`
+    inquirer.prompt(addEmployeeQuestion).then(
+        (data) => {
+            const params = [data.firstName, data.lastName, data.roleId, data.managerId];
+            db.query(sql, params, (err, result) => {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    console.log("New employee successfully added!")
+                }
             })
         }
     )

@@ -50,4 +50,57 @@ const addRoleQuestion = [
     }
 ];
 
-module.exports = {mainMenuQuestion, addDepartmentQuestion, addRoleQuestion};
+const addEmployeeQuestion = [
+    {
+        type: "input",
+        name: "firstName",
+        message: "Enter the first name for your new employee"
+    },
+    {
+        type: "input",
+        name: "lastName",
+        message: "Enter the last name for your new employee"
+    },
+    {
+        type: "list",
+        name: "roleId",
+        message: "Choose a role for your new employee",
+        choices: function () {
+            return new Promise (function (resolve, reject) {
+                const sql = `SELECT role.id, role.title FROM role`;
+                db.query(sql, (err, row) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    else {
+                        let optionsArr = [];
+                        row.forEach(obj => optionsArr.push({name: obj.title, value: obj.id}))
+                        resolve(optionsArr)
+                    }
+                })
+            })
+        }
+    },
+    {
+        type: "list",
+        name: "managerId",
+        message: "Choose the manager this employee reports to",
+        choices: function () {
+            return new Promise (function (resolve, reject) {
+                const sql = `SELECT employee.id, CONCAT (employee.first_name, ' ', employee.last_name) manager FROM employee`;
+                db.query(sql, (err, row) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    else {
+                        let optionsArr = [];
+                        row.forEach(obj => optionsArr.push({name: obj.manager, value: obj.id}))
+                        resolve(optionsArr)
+                    }
+                })
+            })
+        }
+    }
+];
+
+module.exports = {mainMenuQuestion, addDepartmentQuestion, addRoleQuestion, addEmployeeQuestion};
