@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 const cTable = require("console.table")
-const { addDepartmentQuestion, addRoleQuestion, addEmployeeQuestion } = require("./userPrompts");
+const { addDepartmentQuestion, addRoleQuestion, addEmployeeQuestion, mainMenuQuestion} = require("./userPrompts");
 const inquirer = require("inquirer");
 
 const routeRequest = (data) => {
@@ -28,6 +28,10 @@ const routeRequest = (data) => {
         case "Add an employee":
             addEmployee();
             break;
+        
+        case "EXIT":
+            exitApp();
+            break;
     };
 };
 
@@ -39,7 +43,8 @@ const viewAllDepartments = () => {
         }
         else {
             const table = cTable.getTable(row);
-            console.log(table);
+            console.log(table, "\n");
+            returnToMainMenu();
         }
     })
 };
@@ -57,8 +62,9 @@ const viewAllRoles = () => {
         else {
             const table = cTable.getTable(row);
             console.log(table);
+            returnToMainMenu();
         }
-    });
+    })
 };
 
 const viewAllEmployees = () => {
@@ -78,6 +84,7 @@ const viewAllEmployees = () => {
         else {
             const table = cTable.getTable(row);
             console.log(table);
+            returnToMainMenu();
         }
     });
 };
@@ -91,6 +98,7 @@ const addDepartment = (data) => {
                 }
                 else {
                     console.log("Department successfully added!");
+                    returnToMainMenu();
                 };
             })
         }
@@ -107,7 +115,8 @@ const addRole = () => {
                     console.log(err);
                 }
                 else {
-                    console.log("New role successfully added!")
+                    console.log("New role successfully added!");
+                    returnToMainMenu();
                 };
             })
         }
@@ -124,11 +133,21 @@ const addEmployee = () => {
                     console.log(err);
                 }
                 else {
-                    console.log("New employee successfully added!")
+                    console.log("New employee successfully added!");
+                    returnToMainMenu();
                 }
             })
         }
     )
 };
+
+const returnToMainMenu = () => {
+    inquirer.prompt(mainMenuQuestion).then(routeRequest);
+};
+
+const exitApp = () => {
+    console.log("Goodbye!")
+    process.exit(0);
+}
 
 module.exports = {routeRequest};
