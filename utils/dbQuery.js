@@ -1,5 +1,7 @@
 const db = require("../db/connection");
 const cTable = require("console.table")
+const { addDepartmentQuestion } = require("./userPrompts");
+const inquirer = require("inquirer");
 
 const routeRequest = (data) => {
     switch(data.optionSelect) {
@@ -13,6 +15,10 @@ const routeRequest = (data) => {
 
         case "View all employees":
             viewAllEmployees();
+            break;
+
+        case "Add a department":
+            addDepartment();
             break;
     };
 };
@@ -66,6 +72,21 @@ const viewAllEmployees = () => {
             console.log(table);
         }
     });
+};
+
+const addDepartment = (data) => {
+    const sql = `INSERT INTO  department (name) VALUES (?)`;
+    inquirer.prompt(addDepartmentQuestion).then((data) => {
+            db.query(sql, data.departmentName, (err, result) => {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    console.log("Department successfully added!");
+                };
+            })
+        }
+    );
 };
 
 module.exports = {routeRequest};
