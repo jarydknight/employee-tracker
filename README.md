@@ -28,7 +28,8 @@
 
   * Node.js
   * SQL
-  * mysql2
+  * MySQL
+  * mysql2 (npm package)
   * Inquirer (npm package)
   * console.table (npm package)
 
@@ -61,7 +62,7 @@
 
   ## Contributing
 
-  To contribute to this project fork the repositorym, make the changes you desire then open a pull request.
+  To contribute to this project fork the repository, make the changes you desire then open a pull request.
 
   ---
 
