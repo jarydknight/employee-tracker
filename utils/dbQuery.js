@@ -3,6 +3,7 @@ const cTable = require("console.table")
 const { addDepartmentQuestion, addRoleQuestion, addEmployeeQuestion, mainMenuQuestion, updateEmployeeQuestion} = require("./userPrompts");
 const inquirer = require("inquirer");
 
+// Function to route input selected by user at main menu
 const routeRequest = (data) => {
     switch(data.optionSelect) {
         case "View all departments":
@@ -39,20 +40,25 @@ const routeRequest = (data) => {
     };
 };
 
+// Function to show all departments info stored in db
 const viewAllDepartments = () => {
+    // SQL command to be sent to db
     const sql = `SELECT * FROM department`;
+    // Send query to db
     db.query(sql, (err, row) => {
         if (err) {
             console.log(err);
         }
         else {
+            // Print table data to console
             const table = cTable.getTable(row);
-            console.log(table, "\n");
+            console.log(table);
             returnToMainMenu();
         }
     })
 };
 
+// Function to get roles data from db
 const viewAllRoles = () => {
     const sql = `SELECT role.id, role.title, role.salary, department.name
                 AS department
@@ -71,6 +77,7 @@ const viewAllRoles = () => {
     })
 };
 
+// Function to get all employee data from db
 const viewAllEmployees = () => {
     const sql = `
         SELECT e.id id, e.first_name first_name, e.last_name last_name,
@@ -93,8 +100,10 @@ const viewAllEmployees = () => {
     });
 };
 
+// Function to add new department to db
 const addDepartment = (data) => {
     const sql = `INSERT INTO  department (name) VALUES (?)`;
+    // Prompt user for information about new department then pass data to db.query to interract with db
     inquirer.prompt(addDepartmentQuestion).then((data) => {
             db.query(sql, data.departmentName, (err, result) => {
                 if (err) {
@@ -109,6 +118,7 @@ const addDepartment = (data) => {
     );
 };
 
+// Function to add new role to db
 const addRole = () => {
     const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`
     inquirer.prompt(addRoleQuestion).then(
@@ -127,10 +137,12 @@ const addRole = () => {
     )
 };
 
+// Function to add new employee to db
 const addEmployee = () => {
     const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`
     inquirer.prompt(addEmployeeQuestion).then(
         (data) => {
+            // Manager id will either be the id of another employee or null indicating they have no manager
             const params = [data.firstName, data.lastName, data.roleId, data.managerId === "NULL" ? null : data.managerId];
             db.query(sql, params, (err, result) => {
                 if (err) {
@@ -145,6 +157,7 @@ const addEmployee = () => {
     )
 };
 
+// Function to update employee role
 const updateEmployee = () => {
     const sql = `UPDATE employee SET role_id = ? WHERE id = ?`
     inquirer.prompt(updateEmployeeQuestion).then((data) => {
@@ -162,10 +175,12 @@ const updateEmployee = () => {
     })
 };
 
+// Function to return user to main menu after executing other actions
 const returnToMainMenu = () => {
     inquirer.prompt(mainMenuQuestion).then(routeRequest);
 };
 
+// Function that allows user to exit the app from main menu
 const exitApp = () => {
     console.log("Goodbye!")
     process.exit(0);

@@ -1,5 +1,6 @@
 const db = require("../db/connection");
 
+// Question array used to prompt user for main menu options
 const mainMenuQuestion = [
     {
         type: "list",
@@ -9,6 +10,7 @@ const mainMenuQuestion = [
     }
 ];
 
+// Question array used to prompt user for adding a new department
 const addDepartmentQuestion = [
     {
         type: "input",
@@ -17,6 +19,7 @@ const addDepartmentQuestion = [
     }
 ];
 
+// Question array used to prompt user for adding a new role
 const addRoleQuestion = [
     {
         type: "input",
@@ -32,16 +35,22 @@ const addRoleQuestion = [
         type: "list",
         name: "roleDepartment",
         message: "Choose a department for the new role",
+        // USE OF FUNCTION AS VALUE FOR CHOICES KEY IS THE SAME IN THE FOLLOWING OBJECTS THAT USE THE SAME SETUP. THE DESCRIPTION HERE WILL APPLY TO FUNCTIONS USED AS VALUE FOR CHOICES KEY BELOW
+
+        // choices can accept a function that returns an array. This function works by creating a promise which makes a call to the db to get information about the departments to present to the user
         choices: function () {
             return new Promise (function (resolve, reject) {
                 const sql = `SELECT * FROM department`;
+                // db query
                 db.query(sql, (err, row) => {
                     if (err) {
                         return reject(err);
                     }
                     else {
+                        // Once db query complete an option array is initialized and objects are pushed to the array. Inquirer accepts arrays of objects. objects can have name key which will be option presented to the user and value key which is what will be stored as the answer
                         let optionsArr = [];
                         row.forEach(obj => optionsArr.push({name: obj.name, value: obj.id}))
+                        // Resolve optionsArr returns the array of objects with the name and value keys
                         resolve(optionsArr)
                     }
                 })
@@ -50,6 +59,7 @@ const addRoleQuestion = [
     }
 ];
 
+// Question array used to prompt user for adding a new employee
 const addEmployeeQuestion = [
     {
         type: "input",
@@ -93,6 +103,7 @@ const addEmployeeQuestion = [
                         return reject(err);
                     }
                     else {
+                        // optionsArr starts with NULL as the first item so that the user is given the option to have no manager for the employee (null value in the db)
                         let optionsArr = ["NULL"];
                         row.forEach(obj => optionsArr.push({name: obj.manager, value: obj.id}))
                         resolve(optionsArr)
@@ -103,6 +114,7 @@ const addEmployeeQuestion = [
     }
 ];
 
+// Question array to prompt user for updating an employee role
 const updateEmployeeQuestion = [
     {
         type: "list",
