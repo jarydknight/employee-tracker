@@ -131,7 +131,7 @@ const addEmployee = () => {
     const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`
     inquirer.prompt(addEmployeeQuestion).then(
         (data) => {
-            const params = [data.firstName, data.lastName, data.roleId, data.managerId];
+            const params = [data.firstName, data.lastName, data.roleId, data.managerId === "NULL" ? null : data.managerId];
             db.query(sql, params, (err, result) => {
                 if (err) {
                     console.log(err);

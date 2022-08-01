@@ -93,7 +93,7 @@ const addEmployeeQuestion = [
                         return reject(err);
                     }
                     else {
-                        let optionsArr = [];
+                        let optionsArr = ["NULL"];
                         row.forEach(obj => optionsArr.push({name: obj.manager, value: obj.id}))
                         resolve(optionsArr)
                     }
